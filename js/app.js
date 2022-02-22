@@ -1,5 +1,5 @@
 let bombs = [];
-let score = 0;
+let score, maxScore;
 
 const gridWrapper = document.getElementById("grid-wrapper");
 const message = document.createElement("div");
@@ -13,7 +13,8 @@ function createGrid (row, column)
 {
     //inizializzo un array vuoto che contenga i numeri da aggiungere alla griglia e la variabile che indica quanto deve essere grande la griglia
     const numbers = []; 
-    const totalCells = row * column; 
+    const totalCells = row * column;
+    maxScore = totalCells - 16;
 
     //riempo l'array con tanti numeri quante sono le celle
     for (let i = 0; i < totalCells ; i++) 
@@ -23,10 +24,11 @@ function createGrid (row, column)
     const grid = document.querySelector("#grid");
     grid.innerHTML = "";
     message.innerHTML = "";
+    score = 0;
 
     //creo l'array di bombe, richiamando la fn
     bombs = createBombs(16, 1, totalCells);
-    console.log(bombs);
+    console.log(bombs.sort());
 
     //creo tanti quadrati quante devono essere le celle totali
     for (let i = 0; i < totalCells ; i++) 
@@ -41,6 +43,21 @@ function createGrid (row, column)
         let temp = numbers[i];
         square.append(temp);
 
+        //function game over
+        function youLost ()
+        {
+            // grid.addEventListener('click', (event) => event.preventDefault() );
+            // grid.setAttribute("pointer-events", "none");
+            console.log(`hai perso`);
+            message.innerHTML = `Hai perso, hai totalizzato ${score} punti su ${maxScore}`; //scrivo il messaggio
+            square.removeEventListener('click', checkSquares);
+        }
+
+        function youWon() 
+        {
+            message.innerHTML = `Hai vinto, hai totalizzato il massimo punteggio: ` + maxScore; //scrivo il messaggio
+        }
+
         // dichiaro fn che mi faccia vedere se ho cliccato una bomba o no
         function checkSquares ()
         {
@@ -48,17 +65,17 @@ function createGrid (row, column)
             if (bombs.includes(parseInt(this.innerHTML))) 
             {
                 // console.log(this.innerHTML);
-                this.classList.add("bomb"); // se sì, aggiungo la classe bomba e coloro la cella di rosso
-                message.innerHTML = `Hai perso, hai totalizzato ${score} punti`; //scrivo il messaggio
-                square.removeEventListener('click', checkSquares);
-                // youLost(square, score); //se l'utente clicca su una bomba, richiamo la fn hai perso
+                this.classList.add("bomb"); // aggiungo la classe bomba e coloro la cella di rosso
+                youLost(); // se l'utente clicca su una bomba, richiamo la fn "hai perso"
             } 
             else 
             {
                 square.style.backgroundColor = '#7f7fff'; //altrimenti la coloro di azzurro
                 score += 1; //aggiungo uno al punteggio
                 console.log(`punteggio parziale: ` + score); //stampo il punteggio parziale
-                this.removeEventListener('click', checkSquares);
+                this.removeEventListener('click', checkSquares); //rimuovo il click dalla cella
+                if (score === maxScore)
+                    youWon();
             }
         }
 
@@ -66,20 +83,6 @@ function createGrid (row, column)
         square.addEventListener('click', checkSquares);
     }
 }
-
-//
-// function youLost (square, score)
-// {
-//     console.log(score);
-//     message.innerHTML = `Hai perso, hai totalizzato ${score} punti`;
-//     // alert(`Mi dispiace, hai perso! Hai totalizzato ${score} punti`);
-// }
-
-// function youWin (square, score)
-// {
-//     score += 1;
-//     console.log(score);
-// }
 
 //creo funzione che crea array di bombe con la fn random
 function getRndInteger(min, max) {
@@ -97,7 +100,7 @@ function createBombs (maxBombs, min, totalCells)
     }
     while (arrayBombs.length < maxBombs);
 
-    return arrayBombs
+    return arrayBombs;
 }
 
 //seleziono il select e il btn dal dom e, a seconda della difficoltà scelta, creo una griglia
@@ -123,11 +126,3 @@ btn.addEventListener('click', function()
             break;
     } 
 });
-
-
-
-
-
-
-
-
