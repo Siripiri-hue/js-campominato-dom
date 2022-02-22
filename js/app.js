@@ -39,6 +39,28 @@ function createGrid (row, column)
             console.log("I'm working");
         });
     }
+
+    // richiamo la fn crea array di bombe
+    createBombs(16, 1, totalCells);
+}
+
+//creo funzione che crea array di bombe con la fn random
+function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min) ) + min;
+}
+
+function createBombs (maxBombs, min, totalCells)
+{
+    const arrayBombs = [];
+    do 
+    {
+        let random = getRndInteger(min, totalCells)
+        if (!arrayBombs.includes(random))
+            arrayBombs.push(random);
+    }
+    while (arrayBombs.length < maxBombs);
+
+    console.log(arrayBombs);
 }
 
 //seleziono il select e il btn dal dom e, a seconda della difficoltà scelta, creo una griglia
@@ -63,5 +85,8 @@ btn.addEventListener('click', function()
             createGrid(7, 7);
             break;
     }
+    
 });
+
+
 
