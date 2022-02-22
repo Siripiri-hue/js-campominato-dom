@@ -1,7 +1,13 @@
-// easy
-// const row = 10; //imposto il num delle righe della griglia
-// const column = 10; //imposto il num delle colonne della griglia
 let bombs = [];
+let score = 0;
+
+const gridWrapper = document.getElementById("grid-wrapper");
+const message = document.createElement("div");
+gridWrapper.appendChild(message);
+message.setAttribute("id", "message");
+// message.innerHTML = `Ciao! Seleziona un livello per iniziare a giocare!`;
+
+
 //creo funzione per creare la griglia al click del btn
 function createGrid (row, column) 
 {
@@ -11,18 +17,16 @@ function createGrid (row, column)
 
     //riempo l'array con tanti numeri quante sono le celle
     for (let i = 0; i < totalCells ; i++) 
-    {
         numbers.push(i+1);
-    }
 
     //seleziono l'elemento grid dall'html ed eventualmente lo "pulisco"
     const grid = document.querySelector("#grid");
     grid.innerHTML = "";
+    message.innerHTML = "";
 
     //creo l'array di bombe, richiamando la fn
     bombs = createBombs(16, 1, totalCells);
     console.log(bombs);
-
 
     //creo tanti quadrati quante devono essere le celle totali
     for (let i = 0; i < totalCells ; i++) 
@@ -37,33 +41,45 @@ function createGrid (row, column)
         let temp = numbers[i];
         square.append(temp);
 
-        // aggiungo colore azzurro al click dei quadratini
-        square.addEventListener('click', function()
+        // dichiaro fn che mi faccia vedere se ho cliccato una bomba o no
+        function checkSquares ()
         {
-            console.log("I'm working");
-            if (bombs.includes(parseInt(this.innerHTML))) {
-                console.log(this)
-                this.classList.add("bomb");
-            } else 
-                square.style.backgroundColor = '#7f7fff';
-            let check = checkSquare(square);
-        });
+            // console.log(this);
+            if (bombs.includes(parseInt(this.innerHTML))) 
+            {
+                // console.log(this.innerHTML);
+                this.classList.add("bomb"); // se sì, aggiungo la classe bomba e coloro la cella di rosso
+                message.innerHTML = `Hai perso, hai totalizzato ${score} punti`; //scrivo il messaggio
+                square.removeEventListener('click', checkSquares);
+                // youLost(square, score); //se l'utente clicca su una bomba, richiamo la fn hai perso
+            } 
+            else 
+            {
+                square.style.backgroundColor = '#7f7fff'; //altrimenti la coloro di azzurro
+                score += 1; //aggiungo uno al punteggio
+                console.log(`punteggio parziale: ` + score); //stampo il punteggio parziale
+                this.removeEventListener('click', checkSquares);
+            }
+        }
+
+        // aggiungo evento al click dei quadratini e richiamo fn checksquare
+        square.addEventListener('click', checkSquares);
     }
 }
 
-function checkSquare(square) {
-    if (square.classList.contains("bomb"))
-    {
-        console.log("hai perso")
-        return true;
-    }
-        
-    else 
-    {
-        console.log("hai vinto")
-        return false;
-    }    
-}
+//
+// function youLost (square, score)
+// {
+//     console.log(score);
+//     message.innerHTML = `Hai perso, hai totalizzato ${score} punti`;
+//     // alert(`Mi dispiace, hai perso! Hai totalizzato ${score} punti`);
+// }
+
+// function youWin (square, score)
+// {
+//     score += 1;
+//     console.log(score);
+// }
 
 //creo funzione che crea array di bombe con la fn random
 function getRndInteger(min, max) {
@@ -107,6 +123,9 @@ btn.addEventListener('click', function()
             break;
     } 
 });
+
+
+
 
 
 
