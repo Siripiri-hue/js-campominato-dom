@@ -1,7 +1,7 @@
 // easy
 // const row = 10; //imposto il num delle righe della griglia
 // const column = 10; //imposto il num delle colonne della griglia
-
+let bombs = [];
 //creo funzione per creare la griglia al click del btn
 function createGrid (row, column) 
 {
@@ -19,6 +19,11 @@ function createGrid (row, column)
     const grid = document.querySelector("#grid");
     grid.innerHTML = "";
 
+    //creo l'array di bombe, richiamando la fn
+    bombs = createBombs(16, 1, totalCells);
+    console.log(bombs);
+
+
     //creo tanti quadrati quante devono essere le celle totali
     for (let i = 0; i < totalCells ; i++) 
     {
@@ -35,13 +40,29 @@ function createGrid (row, column)
         // aggiungo colore azzurro al click dei quadratini
         square.addEventListener('click', function()
         {
-            square.style.backgroundColor = '#7f7fff';
             console.log("I'm working");
+            if (bombs.includes(parseInt(this.innerHTML))) {
+                console.log(this)
+                this.classList.add("bomb");
+            } else 
+                square.style.backgroundColor = '#7f7fff';
+            let check = checkSquare(square);
         });
     }
+}
 
-    // richiamo la fn crea array di bombe
-    createBombs(16, 1, totalCells);
+function checkSquare(square) {
+    if (square.classList.contains("bomb"))
+    {
+        console.log("hai perso")
+        return true;
+    }
+        
+    else 
+    {
+        console.log("hai vinto")
+        return false;
+    }    
 }
 
 //creo funzione che crea array di bombe con la fn random
@@ -60,7 +81,7 @@ function createBombs (maxBombs, min, totalCells)
     }
     while (arrayBombs.length < maxBombs);
 
-    console.log(arrayBombs);
+    return arrayBombs
 }
 
 //seleziono il select e il btn dal dom e, a seconda della difficoltà scelta, creo una griglia
@@ -84,9 +105,10 @@ btn.addEventListener('click', function()
             // window.location.reload();
             createGrid(7, 7);
             break;
-    }
-    
+    } 
 });
+
+
 
 
 

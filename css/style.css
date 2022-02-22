@@ -45,6 +45,10 @@
     align-items: center;
 }
 
+.bomb {
+    background-color: red;
+}
+
 /* .blue-bg {
     background-color: #7f7fff;
 } */
